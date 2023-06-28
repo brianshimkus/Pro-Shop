@@ -33,7 +33,9 @@ const cartSlice = createSlice({
 			// Calculate shipping price (Shipping $10 unless order exceeds $100)
 			state.shippingPrice = addDecimals(state.itemsPrice > 100 ? 0 : 10)
 
-			// Calculate tax price
+			// Calculate tax price (15% tax)
+			state.taxPrice = addDecimals(Number((0.15 * state.itemsPrice).toFixed(2)))
+
 			// Calculate total price
 		},
 	},
