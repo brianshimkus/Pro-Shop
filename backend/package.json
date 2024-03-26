@@ -5,11 +5,15 @@
 	"type": "module",
 	"main": "server.js",
 	"scripts": {
-		"dev": "nodemon src/server.js"
+		"dev": "nodemon src/server.js",
+		"data:import": "node seeder",
+		"data:destroy": "node seeder -d"
 	},
 	"author": "Brian Shimkus",
 	"license": "ISC",
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"colors": "^1.4.0",
 		"express": "^4.19.2",
 		"mongoose": "^8.2.3"
 	},
