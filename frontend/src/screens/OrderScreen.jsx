@@ -23,6 +23,8 @@ export default function OrderScreen() {
 		error,
 	} = useGetOrderDetailsQuery(orderId)
 
+	const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
+
 	const { userInfo } = useSelector((state) => state.auth)
 
 	const [{ isPending }, paypalDispatch] = usePayPalScriptReducer()
@@ -52,6 +54,36 @@ export default function OrderScreen() {
 			}
 		}
 	}, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch])
+
+	function onApprove(data, actions) {
+		return actions.order.capture().then(async function (details) {
+			try {
+				await payOrder({ orderId, details })
+				refetch()
+				toast.success('Order is paid')
+			} catch (err) {
+				toast.error(err?.data?.message || err.error)
+			}
+		})
+	}
+
+	function onError(err) {
+		toast.error(err.message)
+	}
+
+	function createOrder(data, actions) {
+		return actions.order
+			.create({
+				purchase_units: [
+					{
+						amount: { value: order.totalPrice },
+					},
+				],
+			})
+			.then((orderID) => {
+				return orderID
+			})
+	}
 
 	return isLoading ? (
 		<Loader />
@@ -162,6 +194,33 @@ export default function OrderScreen() {
 									<Col>${order.totalPrice}</Col>
 								</Row>
 							</ListGroup.Item>
+
+							{!order.isPaid && (
+								<ListGroup.Item>
+									{loadingPay && <Loader />}
+
+									{isPending ? (
+										<Loader />
+									) : (
+										<div>
+											{/* THIS BUTTON IS FOR TESTING! REMOVE BEFORE PRODUCTION! */}
+											{/* <Button
+                        style={{ marginBottom: '10px' }}
+                        onClick={onApproveTest}
+                      >
+                        Test Pay Order
+                      </Button> */}
+
+											<div>
+												<PayPalButtons
+													createOrder={createOrder}
+													onApprove={onApprove}
+													onError={onError}></PayPalButtons>
+											</div>
+										</div>
+									)}
+								</ListGroup.Item>
+							)}
 						</ListGroup>
 					</Card>
 				</Col>
