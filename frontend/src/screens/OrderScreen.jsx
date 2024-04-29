@@ -25,6 +25,9 @@ export default function OrderScreen() {
 
 	const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
 
+	const [deliverOrder, { isLoading: loadingDeliver }] =
+		useDeliverOrderMutation()
+
 	const { userInfo } = useSelector((state) => state.auth)
 
 	const [{ isPending }, paypalDispatch] = usePayPalScriptReducer()
@@ -83,6 +86,16 @@ export default function OrderScreen() {
 			.then((orderID) => {
 				return orderID
 			})
+	}
+
+	const deliverHandler = async () => {
+		try {
+			await deliverOrder(orderId)
+			refetch()
+			toast.success('Order is delivered')
+		} catch (error) {
+			toast.error(error?.data?.message || error.error)
+		}
 	}
 
 	return isLoading ? (
@@ -221,6 +234,22 @@ export default function OrderScreen() {
 									)}
 								</ListGroup.Item>
 							)}
+
+							{loadingDeliver && <Loader />}
+
+							{userInfo &&
+								userInfo.isAdmin &&
+								order.isPaid &&
+								!order.isDelivered && (
+									<ListGroup.Item>
+										<Button
+											type='button'
+											className='btn btn-block'
+											onClick={deliverHandler}>
+											Mark As Delivered
+										</Button>
+									</ListGroup.Item>
+								)}
 						</ListGroup>
 					</Card>
 				</Col>
