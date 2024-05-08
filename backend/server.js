@@ -8,6 +8,7 @@ import orderRoutes from './routes/orderRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 import connectDB from './config/db.js'
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'
+import colors from 'colors'
 
 dotenv.config()
 
@@ -44,5 +45,5 @@ app.use(notFound)
 app.use(errorHandler)
 
 app.listen(port, () => {
-	console.log(`Server is running on port ${port}`)
+	console.log(`Server is running on port ${port}`.yellow)
 })
