@@ -9,9 +9,15 @@ import {
 	useCreateProductMutation,
 } from '../../slices/productsApiSlice'
 import { toast } from 'react-toastify'
+import { useParams } from 'react-router-dom'
+import Paginate from '../../components/Paginate'
 
 export default function ProductListScreen() {
-	const { data: products, isLoading, error, refetch } = useGetProductsQuery()
+	const { pageNumber } = useParams()
+
+	const { data, isLoading, error, refetch } = useGetProductsQuery({
+		pageNumber,
+	})
 
 	const [deleteProduct, { isLoading: loadingDelete }] =
 		useDeleteProductMutation()
@@ -60,7 +66,7 @@ export default function ProductListScreen() {
 			{isLoading ? (
 				<Loader />
 			) : error ? (
-				<Message variant='danger'>{error.data.message}</Message>
+				<Message variant='danger'>{error}</Message>
 			) : (
 				<>
 					<Table striped bordered hover responsive className='table-sm'>
@@ -75,7 +81,7 @@ export default function ProductListScreen() {
 							</tr>
 						</thead>
 						<tbody>
-							{products.map((product) => (
+							{data.products.map((product) => (
 								<tr key={product._id}>
 									<td>{product._id}</td>
 									<td>{product.name}</td>
@@ -99,6 +105,7 @@ export default function ProductListScreen() {
 							))}
 						</tbody>
 					</Table>
+					<Paginate pages={data.pages} page={data.page} isAdmin={true} />
 				</>
 			)}
 		</>
