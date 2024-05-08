@@ -5,6 +5,7 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { Link, useParams } from 'react-router-dom'
 import Paginate from '../components/Paginate'
+import ProductCarousel from '../components/ProductCarousel'
 
 export default function HomeScreen() {
 	const { pageNumber, keyword } = useParams()
@@ -17,7 +18,7 @@ export default function HomeScreen() {
 	return (
 		<>
 			{!keyword ? (
-				<h1>-</h1>
+				<ProductCarousel />
 			) : (
 				<Link to='/' className='btn btn-light mb-4'>
 					Go Back
