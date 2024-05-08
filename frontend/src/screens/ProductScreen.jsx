@@ -12,6 +12,7 @@ import Rating from '../components/Rating'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { addToCart } from '../slices/cartSlice'
+import Meta from '../components/Meta'
 
 export default function ProductScreen() {
 	const { id: productId } = useParams()
@@ -69,6 +70,7 @@ export default function ProductScreen() {
 				</Message>
 			) : (
 				<>
+					<Meta title={`Pro Shop | ${product.name}`} />
 					<Row>
 						<Col md={6}>
 							<Image src={product.image} alt={product.name} fluid />
